@@ -1,6 +1,5 @@
 import CanvasManager from './canvasManager.js';
 import Hexagon from './hexagon.js';
-import canvasManager from "./canvasManager.js";
 
 const WIDTH = 5;
 const HEIGHT = 5;
@@ -16,6 +15,7 @@ let yOffset = 50;
 
 const allColors = []
 let currentColor = "";
+let points = 0;
 
 function getRandomColor() {
     const letters = '0123456789ABCDEF';
@@ -54,7 +54,7 @@ function setNeighbors() {
     }
 }
 
-function getClickedHexagon(clientX, clientY) {
+function getClickedHexagon(canvasManager, clientX, clientY) {
     const rect = canvasManager.canvas.getBoundingClientRect();
     const xClick = clientX - rect.left - xOffset;
     const yClick = clientY - rect.top - yOffset;
@@ -95,15 +95,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     canvasManager.draw(xOffset, yOffset);
 
-
-
-
     // Mouse-Handler für das Canvas.
     canvasManager.canvas.addEventListener('click', (e) => {
-        const clickedHexagon = getClickedHexagon(e.clientX, e.clientY);
+        const pointsElement = document.getElementById('points');
+        const clickedHexagon = getClickedHexagon(canvasManager, e.clientX, e.clientY);
         if (clickedHexagon) {
-            const colorDiv = document.getElementById('color');
-            colorDiv.style.backgroundColor = clickedHexagon.color;
+            if (clickedHexagon.color === currentColor) {
+                points += 1;
+                setNewColor();
+            } else {
+                points -= 1;
+            }
+            pointsElement.textContent = points;
         }
     });
+
+    setNewColor();
 });
